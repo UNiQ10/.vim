@@ -9,6 +9,11 @@ set nocompatible
 " Unset all autocommands.
 :autocmd!
 
+" Manage plugins with plug.vim.
+call plug#begin('~/.vim/plugged')
+
+call plug#end()
+
 " Make backspace behave normally in insert mode.
 set backspace=indent,eol,start
 
