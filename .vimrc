@@ -12,6 +12,9 @@ set nocompatible
 " Manage plugins with plug.vim.
 call plug#begin('~/.vim/plugged')
 
+" Get Tomorrow theme bundle.
+Plug 'https://github.com/chriskempson/tomorrow-theme.git', { 'rtp': 'vim' }
+
 call plug#end()
 
 " Make backspace behave normally in insert mode.
@@ -19,6 +22,9 @@ set backspace=indent,eol,start
 
 " Switch on syntax highlighting.
 syntax on
+
+" Use Tomorrow-Night-Bright theme
+colorscheme Tomorrow-Night-Bright
 
 " Enable file type detection and language specific indenting.
 filetype plugin indent on
