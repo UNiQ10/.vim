@@ -15,6 +15,9 @@ call plug#begin('~/.vim/plugged')
 " Get Tomorrow theme bundle.
 Plug 'https://github.com/chriskempson/tomorrow-theme.git', { 'rtp': 'vim' }
 
+" Get neocomplete autocompletion system
+Plug 'https://github.com/Shougo/neocomplete.vim.git'
+
 call plug#end()
 
 " Make backspace behave normally in insert mode.
@@ -73,3 +76,10 @@ set encoding=utf-8
 set nobackup
 set swapfile
 set directory^=$HOME/.vim/swp//
+
+" neocomplete autocompletion settings
+
+" Enable neocomplete
+let g:neocomplete#enable_at_startup=1
+" Use TAB to cycle through suggestions
+inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
