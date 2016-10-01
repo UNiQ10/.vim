@@ -83,3 +83,6 @@ set directory^=$HOME/.vim/swp//
 let g:neocomplete#enable_at_startup=1
 " Use TAB to cycle through suggestions
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+
+" Map jj in insert mode to <Esc>.
+inoremap jj <Esc>
