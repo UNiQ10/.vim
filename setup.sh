@@ -18,20 +18,21 @@ fi
 
 ln -s "$DIR"/.vimrc "$HOME"/.vimrc
 
-echo ".vimrc symlink created!"
+echo ".vimrc symlink created."
 
 # Dowload plug.vim plugin manager to autoload directory.
-echo "Downloading plug.vim plugin manger to autoload directory"
+echo "Downloading vim-plug plugin manger to autoload directory."
 
 curl -fLo "$DIR"/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 
 if [[ $? -ne 0 ]]; then
-    echo "plug.vim download failed! Exiting."
+    echo "vim-plug download failed! Exiting."
     exit 1
 fi
 
-echo "plug.vim download completed!"
+echo "vim-plug download completed."
 
 # Setup complete.
-echo "vim configuration completed!"
+echo "Vim configuration completed."
+echo "Run Vim and execute ':PlugUpdate' to install plugins."
