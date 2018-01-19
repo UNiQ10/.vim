@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# Check if readlink and curl exists.
+readlink --help > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo "readlink not found! Exiting."
+    exit 1
+fi
+
+curl --help > /dev/null 2>&1
+if [ $? -ne 0 ]; then
+    echo "curl not found! Exiting."
+    exit 1
+fi
+
 # Find the directory path of setup.sh.
 DIR="$( dirname "$(readlink -f "$0" )")"
 
