@@ -57,9 +57,6 @@ set expandtab
 set smartindent
 set autoindent
 
-" Remove trailing spaces from all lines before buffer write.
-autocmd BufWritePre * :%s/\s\+$//e
-
 " Add search higlighting, realtime matching and smart case-insensitive search.
 set hlsearch
 set incsearch
@@ -86,3 +83,6 @@ inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 
 " Map jj in insert mode to <Esc>.
 inoremap jj <Esc>
+
+" Add :RemTrailingSp command to remove trailing whitespaces.
+command RemTrailingSp %s/\s\+$//e
