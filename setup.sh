@@ -9,19 +9,20 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Automatically exit if any of the subsequent command fails.
+set -e
+
 # Find the directory path of setup.sh.
 DIR="$( cd -- "$( dirname -- "$0" )" > /dev/null && pwd )"
+CONFIG_BACKUP_DIR="$DIR/config_backups"
 
 # vim setup
 echo "Creating symlink to $DIR/.vimrc at $HOME/.vimrc."
 
-if [ -f "$HOME"/.vimrc ]; then
-    echo ".vimrc already exists at $HOME! Press y when prompted to remove it."
-    rm -i "$HOME"/.vimrc
-    if [ -f "$HOME"/.vimrc ]; then
-        echo "Failed to create symlink at $HOME/.vimrc! Exiting."
-        exit 1
-    fi
+if [ -e "$HOME"/.vimrc ]; then
+    echo ".vimrc already exists at $HOME!"
+    echo "Backing it up to $CONFIG_BACKUP_DIR."
+    mv -- "$HOME"/.vimrc "$CONFIG_BACKUP_DIR"
 fi
 
 ln -s -- "$DIR"/.vimrc "$HOME"/.vimrc
@@ -29,6 +30,7 @@ ln -s -- "$DIR"/.vimrc "$HOME"/.vimrc
 echo ".vimrc symlink created."
 
 # Try downloading vim-plug and do not exit automatically anymore.
+set +e
 if [ $CURL_FOUND -eq 1 ]; then
     echo "Downloading vim-plug plugin manger to autoload directory."
     curl https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
