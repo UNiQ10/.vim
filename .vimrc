@@ -1,5 +1,5 @@
 "|---------------------------------------------------------------------------|"
-"|                Personal .vimrc file of Sandeep Subramanian                |"
+"|                Personal .vimrc file of uniq10                             |"
 "|---------------------------------------------------------------------------|"
 
 " Use Vim settings instead of Vi settings.
@@ -72,7 +72,7 @@ set encoding=utf-8
 " Disable backups and store swap files at $HOME/.vim/swp/
 set nobackup
 set swapfile
-set directory^=$HOME/.vim/swp//
+set directory^=$HOME/.vim/swp/
 
 " neocomplete autocompletion settings
 

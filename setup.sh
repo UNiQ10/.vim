@@ -13,7 +13,7 @@ fi
 set -e
 
 # Find the directory path of setup.sh.
-DIR="$( cd -- "$( dirname -- "$0" )" > /dev/null && pwd )"
+DIR="$( cd -- "$( dirname -- "$0" )" > /dev/null 2>&1 && pwd )"
 CONFIG_BACKUP_DIR="$DIR/config_backups"
 
 # vim setup
@@ -25,9 +25,41 @@ if [ -e "$HOME"/.vimrc ]; then
     mv -- "$HOME"/.vimrc "$CONFIG_BACKUP_DIR"
 fi
 
-ln -s -- "$DIR"/.vimrc "$HOME"/.vimrc
+ln -fs -- "$DIR"/.vimrc "$HOME"/.vimrc
 
 echo ".vimrc symlink created."
+
+
+if [ -e "$HOME"/.vim -a "$HOME"/.vim = "$DIR" ]; then
+    echo "$HOME/.vim same as script directory."
+    echo ".vim symlink not required."
+else
+    if [ -e "$HOME"/.vim ]; then
+        echo "A different .vim already exists at $HOME!"
+        echo "Backing it up to $CONFIG_BACKUP_DIR"
+        mv -- "$HOME"/.vim "$CONFIG_BACKUP_DIR"
+    fi
+    echo "Creating symlink to $DIR at $HOME/.vim."
+    ln -fs -- "$DIR" "$HOME"/.vim
+    echo ".vim symlink created."
+fi
+
+# nvim setup
+NVIM_DIR="$HOME"/.config/nvim
+
+if [ ! -z "$XDG_CONFIG_HOME" ]; then
+    NVIM_DIR="$XDG_CONFIG_HOME"/nvim
+fi
+
+if [ -e "$NVIM_DIR" ]; then
+    echo "nvim config directory already exists at $NVIM_DIR!"
+    echo "Backing it up to $CONFIG_BACKUP_DIR."
+    mv -- "$NVIM_DIR" "$CONFIG_BACKUP_DIR"
+fi
+
+ln -fs -- "$DIR"/nvim "$NVIM_DIR"
+
+echo "nvim directory symlink created."
 
 # Try downloading vim-plug and do not exit automatically anymore.
 set +e
