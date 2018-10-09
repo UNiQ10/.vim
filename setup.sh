@@ -1,23 +1,18 @@
-#!/bin/bash
+#!/bin/sh
 
-# Check if readlink and curl exists.
-readlink --help > /dev/null 2>&1
-if [ $? -ne 0 ]; then
-    echo "readlink not found! Exiting."
-    exit 1
-fi
+# Check if curl exists.
+CURL_FOUND=1
 
 curl --help > /dev/null 2>&1
 if [ $? -ne 0 ]; then
-    echo "curl not found! Exiting."
+    CURL_FOUND=0
     exit 1
 fi
 
 # Find the directory path of setup.sh.
-DIR="$( dirname "$(readlink -f "$0" )")"
+DIR="$( cd -- "$( dirname -- "$0" )" > /dev/null && pwd )"
 
-# Create a symlink to $DIR/.vimrc at $HOME/.vimrc.
-# Will prompt to delete existing .vimrc.
+# vim setup
 echo "Creating symlink to $DIR/.vimrc at $HOME/.vimrc."
 
 if [ -f "$HOME"/.vimrc ]; then
@@ -29,23 +24,26 @@ if [ -f "$HOME"/.vimrc ]; then
     fi
 fi
 
-ln -s "$DIR"/.vimrc "$HOME"/.vimrc
+ln -s -- "$DIR"/.vimrc "$HOME"/.vimrc
 
 echo ".vimrc symlink created."
 
-# Dowload plug.vim plugin manager to autoload directory.
-echo "Downloading vim-plug plugin manger to autoload directory."
+# Try downloading vim-plug and do not exit automatically anymore.
+if [ $CURL_FOUND -eq 1 ]; then
+    echo "Downloading vim-plug plugin manger to autoload directory."
+    curl https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
+        --create-dirs -Lo "$DIR"/autoload/plug.vim
 
-curl -fLo "$DIR"/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-
-if [ $? -ne 0 ]; then
-    echo "vim-plug download failed! Exiting."
-    exit 1
+    if [ $? -ne 0 ]; then
+        echo "vim-plug download failed!."
+        echo "Install vim-plug and the plugins manually."
+    else
+        echo "vim-plug download completed."
+        echo "Run Vim and execute ':PlugUpdate' to install plugins."
+    fi
+else
+    echo "Curl not found. Cannot download vim-plug!"
+    echo "Install vim-plug and the plugins manually."
 fi
 
-echo "vim-plug download completed."
-
-# Setup complete.
 echo "Vim configuration completed."
-echo "Run Vim and execute ':PlugUpdate' to install plugins."
