@@ -4,6 +4,6 @@
 
 1. Clone the repository
 2. Run setup.sh
-3. Run Vim and execute ':PlugUpdate' to install plugins
+3. If required, open Vim and execute ':PlugUpdate' to install plugins
 
-NOTE: Some plugins may not work if the Vim installation has no lua support.
+NOTE: Some plugins require nvim/Vim8 with python3 support.
