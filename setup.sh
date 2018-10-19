@@ -87,11 +87,16 @@ if [ $CURL_FOUND -eq 1 ]; then
         echo "Install vim-plug and the plugins manually."
     else
         echo "vim-plug download completed."
-        echo "Run Vim and execute ':PlugUpdate' to install plugins."
+        echo "Attempting to install plugins."
+        vim +PlugUpdate +qall
+        if [ $? -ne 0 ]; then
+            echo "Automatic plugin installation failed!"
+            echo "Open Vim and execute ':PlugUpdate' for manual installation."
+        else
+            echo "Plugins installed."
+        fi
     fi
 else
     echo "Curl not found. Cannot download vim-plug!"
     echo "Install vim-plug and the plugins manually."
 fi
-
-echo "Vim configuration completed."
