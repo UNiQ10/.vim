@@ -10,6 +10,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Automatically exit if any of the subsequent command fails.
+# NOTE: This option will be disabled further down in the script.
 set -e
 
 # Find the directory path of setup.sh.
@@ -60,9 +61,22 @@ fi
 ln -fs -- "$DIR"/nvim "$NVIM_DIR"
 
 echo "nvim directory symlink created."
+echo "Vim configuration completed."
 
-# Try downloading vim-plug and do not exit automatically anymore.
+# Do not exit automatically on command failure anymore.
 set +e
+
+# Try installing python3 neovim package for deoplete autocompletion support.
+echo "Attempting to install python3 neovim package."
+
+pip3  install --user --upgrade neovim
+
+if [ $? -ne 0 ]; then
+    echo "Python3 neovim package installation failed!"
+    echo "Might need manual installation for deoplete autocompletion support."
+fi
+
+# Try downloading vim-plug.
 if [ $CURL_FOUND -eq 1 ]; then
     echo "Downloading vim-plug plugin manger to autoload directory."
     curl https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \

@@ -9,14 +9,46 @@ set nocompatible
 " Unset all autocommands.
 :autocmd!
 
+" Local variable to store a list of warning messages
+let s:warnmsglist = []
+
+function AddWarning(msg)
+    call add(s:warnmsglist, a:msg)
+endfunction
+
+function PrintWarningMsgs(msglist)
+    for msg in a:msglist
+        echohl WarningMsg
+        echo 'Warning: '
+        echohl None
+        echon msg
+    endfor
+endfunction
+
 " Manage plugins with plug.vim.
 call plug#begin('~/.vim/plugged')
 
 " Get Tomorrow theme bundle.
 Plug 'https://github.com/chriskempson/tomorrow-theme.git', { 'rtp': 'vim' }
 
-" Get neocomplete autocompletion system
-Plug 'https://github.com/Shougo/neocomplete.vim.git'
+" Get deoplete autocompletion system for nvim or Vim8
+
+" deoplete requires python3 support
+if !has('python3')
+    call AddWarning(join([
+        \ 'deoplete will not work since python3 support not found.',
+        \ 'Try `pip3 --user --upgrade install neovim if using neovim/Vim8',
+        \ 'and run :PlugUpdate after.'
+        \ ], "\n\t"))
+elseif has('nvim')
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+elseif v:version >= 800
+    Plug 'Shougo/deoplete.nvim'
+    Plug 'roxma/nvim-yarp'
+    Plug 'roxma/vim-hug-neovim-rpc'
+else
+    call AddWarning('Not using neovim/Vim8. deoplete will not work.')
+endif
 
 call plug#end()
 
@@ -88,10 +120,10 @@ set nobackup
 set swapfile
 set directory^=$HOME/.vim/swp/
 
-" neocomplete autocompletion settings
+" deoplete autocompletion settings
 
-" Enable neocomplete
-let g:neocomplete#enable_at_startup=1
+" Enable deoplete
+let g:deoplete#enable_at_startup=1
 " Use TAB to cycle through suggestions
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 
@@ -100,3 +132,5 @@ inoremap jj <Esc>
 
 " Add :RemTrailingSp command to remove trailing whitespaces.
 command RemTrailingSp %s/\s\+$//e
+
+autocmd VimEnter * call PrintWarningMsgs(s:warnmsglist)
