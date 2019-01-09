@@ -9,7 +9,7 @@ set nocompatible
 " Unset all autocommands.
 :autocmd!
 
-" Local variable to store a list of warning messages
+" Local variable to store a list of warning messages.
 let s:warnmsglist = []
 
 function AddWarning(msg)
@@ -31,13 +31,13 @@ call plug#begin('~/.vim/plugged')
 " Get Tomorrow theme bundle.
 Plug 'https://github.com/chriskempson/tomorrow-theme.git', { 'rtp': 'vim' }
 
-" Get deoplete autocompletion system for nvim or Vim8
 
-" deoplete requires python3 support
+" Get deoplete autocompletion system for nvim or Vim8.
+" deoplete requires python3 support.
 if !has('python3')
     call AddWarning(join([
         \ 'deoplete will not work since python3 support not found.',
-        \ 'Try `pip3 --user --upgrade install neovim if using neovim/Vim8',
+        \ 'Try `pip3 --user --upgrade install neovim` if using neovim/Vim8',
         \ 'and run :PlugUpdate after.'
         \ ], "\n\t"))
 elseif has('nvim')
@@ -58,7 +58,7 @@ set backspace=indent,eol,start
 " Switch on syntax highlighting.
 syntax on
 
-" Use Tomorrow-Night-Bright theme
+" Use Tomorrow-Night-Bright theme.
 colorscheme Tomorrow-Night-Bright
 
 " Enable file type detection and language specific indenting.
@@ -73,13 +73,14 @@ set hidden
 " Add a colored column at 80 to indicate standard column size.
 set colorcolumn=80
 
+
 " Increase command history to 100.
 " Change default viminfo settings to give preference to the value of history.
 set viminfo=<100,'20,f1,s100
-"           |    |   |  + registers with more than 100KB skipped
-"           |    |   + store file marks
-"           |    + remember marks for 20 previously edited files
-"           + store maximum 100 lines for each register
+"           |    |   |  + registers with more than 100KB skipped.
+"           |    |   + store file marks.
+"           |    + remember marks for 20 previously edited files.
+"           + store maximum 100 lines for each register.
 set history=100
 
 " Set default tab behaviour to 4 spaces and enable autoindenting.
@@ -95,12 +96,11 @@ set incsearch
 set ignorecase
 set smartcase
 
-" Add window switching shortcuts
+" Add window switching shortcuts.
 nnoremap <A-h> <C-w>h
 nnoremap <A-j> <C-w>j
 nnoremap <A-k> <C-w>k
 nnoremap <A-l> <C-w>l
-
 if has('nvim')
     tnoremap <A-h> <C-\><C-n><C-w>h
     tnoremap <A-j> <C-\><C-n><C-w>j
@@ -108,23 +108,23 @@ if has('nvim')
     tnoremap <A-l> <C-\><C-n><C-w>l
 endif
 
-
 " Show matching parantheses.
 set showmatch
 
 " Use UTF-8 encoding by default.
 set encoding=utf-8
 
-" Disable backups and store swap files at $HOME/.vim/swp/
+" Disable backups and store swap files at $HOME/.vim/swp/.
 set nobackup
 set swapfile
 set directory^=$HOME/.vim/swp/
 
-" deoplete autocompletion settings
 
-" Enable deoplete
+" deoplete autocompletion settings.
+
+" Enable deoplete.
 let g:deoplete#enable_at_startup=1
-" Use TAB to cycle through suggestions
+" Use TAB to cycle through suggestions.
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 
 " Map jj in insert mode to <Esc>.
