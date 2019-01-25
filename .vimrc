@@ -131,14 +131,16 @@ inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 inoremap jj <Esc>
 
 " Add :RemTrailingSp command to remove trailing whitespaces.
-command RemTrailingSp %s/\s\+$//e
+let s:trailingSpRegex='\(\s\+$\)\|\(\($\n\s*\)\+\%$\)'
+command RemTrailingSp :execute '%s/' . s:trailingSpRegex . '//ge'
 
 
 " Automatically remove trailing whitespaces if the file, when opened, didn't
 " have any trailing whitespace.
 
 " Set a flag if a new file has trailing whitespaces when opened.
-autocmd BufReadPost * :if(search('\s\+$', 'nw')) | let b:inithastrailingsp = 1
+autocmd BufReadPost * :if(search(s:trailingSpRegex, 'nw'))
+                      \ | let b:inithastrailingsp = 1
 " Remove trailing whitespaces if the whitespace flag is not set.
 autocmd BufWritePre * :if((!exists('b:inithastrailingsp'))
                       \   || (!b:inithastrailingsp)) | RemTrailingSp
