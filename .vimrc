@@ -145,4 +145,9 @@ autocmd BufReadPost * :if(search(s:trailingSpRegex, 'nw'))
 autocmd BufWritePre * :if((!exists('b:inithastrailingsp'))
                       \   || (!b:inithastrailingsp)) | RemTrailingSp
 
+" Disable line numbers in terminal mode.
+if has('nvim')
+    autocmd TermOpen * setlocal nonumber norelativenumber
+endif
+
 autocmd VimEnter * call PrintWarningMsgs(s:warnmsglist)
