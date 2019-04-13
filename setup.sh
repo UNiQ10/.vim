@@ -6,7 +6,6 @@ CURL_FOUND=1
 curl --help > /dev/null 2>&1
 if [ $? -ne 0 ]; then
     CURL_FOUND=0
-    exit 1
 fi
 
 # Automatically exit if any of the subsequent command fails.
