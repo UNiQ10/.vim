@@ -8,7 +8,7 @@ if [ $? -ne 0 ]; then
     CURL_FOUND=0
 fi
 
-# Automatically exit if any of the subsequent command fails.
+# Automatically exit if any of the subsequent commands fail.
 # NOTE: This option will be disabled further down in the script.
 set -e
 
