@@ -92,9 +92,18 @@ fi
 echo "Attempting to install plugins."
 vim +PlugUpgrade +PlugUpdate +qall
 if [ $? -ne 0 ]; then
-    echo "Automatic plugin installation failed!"
+    echo "Automatic plugin installation failed for Vim!"
     echo "Open Vim and execute ':PlugUpgrade' and ':PlugUpdate'" \
          "for manual installation."
 else
-    echo "Plugins installed."
+    echo "Plugins installed for Vim."
+fi
+
+nvim +PlugUpgrade +PlugUpdate +qall
+if [ $? -ne 0 ]; then
+    echo "Automatic plugin installation failed for nvim!"
+    echo "Open nvim and execute ':PlugUpgrade' and ':PlugUpdate'" \
+         "for manual installation."
+else
+    echo "Plugins installed for nvim."
 fi
