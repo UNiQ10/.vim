@@ -13,11 +13,11 @@ fi
 set -e
 
 # Find the directory path of setup.sh.
-DIR="$( cd -- "$( dirname -- "$0" )" > /dev/null 2>&1 && pwd )"
-CONFIG_BACKUP_DIR="$DIR/config_backups"
+SCRIPT_DIR="$( cd -- "$( dirname -- "$0" )" > /dev/null 2>&1 && pwd )"
+CONFIG_BACKUP_DIR="$SCRIPT_DIR/config_backups"
 
 # vim setup
-echo "Creating symlink to $DIR/.vimrc at $HOME/.vimrc."
+echo "Creating symlink to $SCRIPT_DIR/.vimrc at $HOME/.vimrc."
 
 if [ -e "$HOME"/.vimrc ]; then
     echo ".vimrc already exists at $HOME!"
@@ -25,12 +25,12 @@ if [ -e "$HOME"/.vimrc ]; then
     mv -- "$HOME"/.vimrc "$CONFIG_BACKUP_DIR"
 fi
 
-ln -fs -- "$DIR"/.vimrc "$HOME"/.vimrc
+ln -fs -- "$SCRIPT_DIR"/.vimrc "$HOME"/.vimrc
 
 echo ".vimrc symlink created."
 
 
-if [ -e "$HOME"/.vim -a "$HOME"/.vim = "$DIR" ]; then
+if [ -e "$HOME"/.vim -a "$HOME"/.vim = "$SCRIPT_DIR" ]; then
     echo "$HOME/.vim same as script directory."
     echo ".vim symlink not required."
 else
@@ -39,8 +39,8 @@ else
         echo "Backing it up to $CONFIG_BACKUP_DIR"
         mv -- "$HOME"/.vim "$CONFIG_BACKUP_DIR"
     fi
-    echo "Creating symlink to $DIR at $HOME/.vim."
-    ln -fs -- "$DIR" "$HOME"/.vim
+    echo "Creating symlink to $SCRIPT_DIR at $HOME/.vim."
+    ln -fs -- "$SCRIPT_DIR" "$HOME"/.vim
     echo ".vim symlink created."
 fi
 
@@ -57,7 +57,7 @@ if [ -e "$NVIM_DIR" ]; then
     mv -- "$NVIM_DIR" "$CONFIG_BACKUP_DIR"
 fi
 
-ln -fs -- "$DIR"/nvim "$NVIM_DIR"
+ln -fs -- "$SCRIPT_DIR"/nvim "$NVIM_DIR"
 
 echo "nvim directory symlink created."
 echo "Vim configuration completed."
@@ -79,7 +79,7 @@ fi
 if [ $CURL_FOUND -eq 1 ]; then
     echo "Downloading vim-plug plugin manger to autoload directory."
     curl https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
-        --create-dirs -Lo "$DIR"/autoload/plug.vim
+        --create-dirs -Lo "$SCRIPT_DIR"/autoload/plug.vim
 
     if [ $? -ne 0 ]; then
         echo "vim-plug download failed!."
