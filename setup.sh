@@ -17,14 +17,6 @@ safe_mv () {
     fi
 }
 
-# Check if curl exists.
-CURL_FOUND=1
-
-curl --help > /dev/null 2>&1
-if [ $? -ne 0 ]; then
-    CURL_FOUND=0
-fi
-
 # Automatically exit if any of the subsequent commands fail.
 # NOTE: This option will be disabled further down in the script.
 set -e
@@ -97,27 +89,12 @@ if [ $? -ne 0 ]; then
     echo "Might need manual installation for deoplete autocompletion support."
 fi
 
-# Try downloading vim-plug.
-if [ $CURL_FOUND -eq 1 ]; then
-    echo "Downloading vim-plug plugin manger to autoload directory."
-    curl https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
-        --create-dirs -Lo "$SCRIPT_DIR"/autoload/plug.vim
-
-    if [ $? -ne 0 ]; then
-        echo "vim-plug download failed!."
-        echo "Install vim-plug and the plugins manually."
-    else
-        echo "vim-plug download completed."
-        echo "Attempting to install plugins."
-        vim +PlugUpdate +qall
-        if [ $? -ne 0 ]; then
-            echo "Automatic plugin installation failed!"
-            echo "Open Vim and execute ':PlugUpdate' for manual installation."
-        else
-            echo "Plugins installed."
-        fi
-    fi
+echo "Attempting to install plugins."
+vim +PlugUpgrade +PlugUpdate +qall
+if [ $? -ne 0 ]; then
+    echo "Automatic plugin installation failed!"
+    echo "Open Vim and execute ':PlugUpgrade' and ':PlugUpdate'" \
+         "for manual installation."
 else
-    echo "Curl not found. Cannot download vim-plug!"
-    echo "Install vim-plug and the plugins manually."
+    echo "Plugins installed."
 fi
