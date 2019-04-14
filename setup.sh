@@ -1,5 +1,22 @@
 #!/bin/sh
 
+safe_mv () {
+    SRC_PATH="$1"
+    DEST_DIR="$2"
+    SRC_BASENAME="$( basename -- "$SRC_PATH" )"
+    if [ ! -e "$DEST_DIR/$SRC_BASENAME" ]; then
+        echo "Moving $SRC_PATH to $DEST_DIR/$SRC_BASENAME ."
+        mv -- "$SRC_PATH" "$DEST_DIR/$SRC_BASENAME"
+    else
+        SUFFIX=1
+        while [ -e "$DEST_DIR/$SRC_BASENAME""_$SUFFIX" ]; do
+            SUFFIX=$(( $SUFFIX + 1 ))
+        done
+        echo "Moving $SRC_PATH to $DEST_DIR/$SRC_BASENAME""_$SUFFIX ."
+        mv -- "$SRC_PATH" "$DEST_DIR/$SRC_BASENAME""_$SUFFIX"
+    fi
+}
+
 # Check if curl exists.
 CURL_FOUND=1
 
@@ -13,51 +30,56 @@ fi
 set -e
 
 # Find the directory path of setup.sh.
-SCRIPT_DIR="$( cd -- "$( dirname -- "$0" )" > /dev/null 2>&1 && pwd )"
+SCRIPT_DIR="$( cd -- "$( dirname -- "$0" )" > /dev/null 2>&1 && pwd -P )"
+
 CONFIG_BACKUP_DIR="$SCRIPT_DIR/config_backups"
 
 # vim setup
-echo "Creating symlink to $SCRIPT_DIR/.vimrc at $HOME/.vimrc."
+echo "Creating symlink to $SCRIPT_DIR/.vimrc at $HOME/.vimrc ."
 
-if [ -e "$HOME"/.vimrc ]; then
-    echo ".vimrc already exists at $HOME!"
-    echo "Backing it up to $CONFIG_BACKUP_DIR."
-    mv -- "$HOME"/.vimrc "$CONFIG_BACKUP_DIR"
+if [ -e "$HOME/.vimrc" ]; then
+    echo ".vimrc already exists at $HOME !"
+    safe_mv "$HOME/.vimrc" "$CONFIG_BACKUP_DIR"
 fi
 
-ln -fs -- "$SCRIPT_DIR"/.vimrc "$HOME"/.vimrc
+ln -fs -- "$SCRIPT_DIR/.vimrc" "$HOME/.vimrc"
 
 echo ".vimrc symlink created."
 
-
-if [ -e "$HOME"/.vim -a "$HOME"/.vim = "$SCRIPT_DIR" ]; then
+if [ -e "$HOME/.vim" \
+     -a "$(cd -- "$HOME/.vim" > /dev/null 2>&1 && pwd -P )" = "$SCRIPT_DIR" \
+   ]; then
     echo "$HOME/.vim same as script directory."
     echo ".vim symlink not required."
 else
-    if [ -e "$HOME"/.vim ]; then
-        echo "A different .vim already exists at $HOME!"
-        echo "Backing it up to $CONFIG_BACKUP_DIR"
-        mv -- "$HOME"/.vim "$CONFIG_BACKUP_DIR"
+    if [ -e "$HOME/.vim" ]; then
+        echo "A different .vim already exists at $HOME !"
+        safe_mv "$HOME/.vim" "$CONFIG_BACKUP_DIR"
     fi
-    echo "Creating symlink to $SCRIPT_DIR at $HOME/.vim."
-    ln -fs -- "$SCRIPT_DIR" "$HOME"/.vim
+    echo "Creating symlink to $SCRIPT_DIR at $HOME/.vim ."
+    ln -fs -- "$SCRIPT_DIR" "$HOME/.vim"
     echo ".vim symlink created."
 fi
 
 # nvim setup
-NVIM_DIR="$HOME"/.config/nvim
-
 if [ ! -z "$XDG_CONFIG_HOME" ]; then
-    NVIM_DIR="$XDG_CONFIG_HOME"/nvim
+    if [ ! -e "$XDG_CONFIG_HOME" ]; then
+        mkdir -p -- "$XDG_CONFIG_HOME"
+    fi
+    NVIM_DIR="$XDG_CONFIG_HOME/nvim"
+else
+    if [ ! -e "$HOME/.config" ]; then
+        mkdir -p -- "$HOME/.config"
+    fi
+    NVIM_DIR="$HOME/.config/nvim"
 fi
 
 if [ -e "$NVIM_DIR" ]; then
-    echo "nvim config directory already exists at $NVIM_DIR!"
-    echo "Backing it up to $CONFIG_BACKUP_DIR."
-    mv -- "$NVIM_DIR" "$CONFIG_BACKUP_DIR"
+    echo "nvim config directory already exists at $NVIM_DIR !"
+    safe_mv "$NVIM_DIR" "$CONFIG_BACKUP_DIR"
 fi
 
-ln -fs -- "$SCRIPT_DIR"/nvim "$NVIM_DIR"
+ln -fs -- "$SCRIPT_DIR/nvim" "$NVIM_DIR"
 
 echo "nvim directory symlink created."
 echo "Vim configuration completed."
