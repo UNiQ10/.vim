@@ -9,6 +9,19 @@ set nocompatible
 " Unset all autocommands.
 :autocmd!
 
+
+" Set python options
+if has('nvim')
+    let s:python3_bin = expand('~/.vim/venv/bin/python3')
+    let g:python3_host_prog = s:python3_bin
+endif
+
+" Force python3 if possible
+" This must be done after python3_host_prog is set for nvim
+if has('python3')
+endif
+
+
 " Local variable to store a list of warning messages.
 let s:warnmsglist = []
 
@@ -26,7 +39,7 @@ function PrintWarningMsgs(msglist)
 endfunction
 
 " Manage plugins with plug.vim.
-call plug#begin('~/.vim/plugged')
+call plug#begin(expand('~/.vim/plugged'))
 
 " Get Tomorrow theme bundle.
 Plug 'https://github.com/chriskempson/tomorrow-theme.git', { 'rtp': 'vim' }
@@ -34,23 +47,28 @@ Plug 'https://github.com/chriskempson/tomorrow-theme.git', { 'rtp': 'vim' }
 
 " Get deoplete autocompletion system for nvim or Vim8.
 " deoplete requires python3 support.
-if !has('python3')
-    call AddWarning(join([
-        \ 'deoplete will not work since python3 support not found.',
-        \ 'Try `pip3 --user --upgrade install neovim` if using neovim/Vim8',
-        \ 'and run :PlugUpdate after.'
-        \ ], "\n\t"))
-elseif has('nvim')
-    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-elseif v:version >= 800
+if has('nvim')
+    if !has('python3')
+        call AddWarning(join([
+            \ 'deoplete will not work since python3 support not found.',
+            \ 'Execute `' . s:python3_bin . ' -m pip install --upgrade pynvim`',
+            \ 'if using neovim and run :PlugUpdate after.'
+            \ ], "\n\t"))
+    else
+        Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+    endif
+elseif v:version >= 800 && has('python3')
     Plug 'Shougo/deoplete.nvim'
     Plug 'roxma/nvim-yarp'
     Plug 'roxma/vim-hug-neovim-rpc'
 else
-    call AddWarning('Not using neovim/Vim8. deoplete will not work.')
+    call AddWarning(
+        \ 'Not using neovim/Vim8 with python3 support. deoplete will not work.')
 endif
 
+
 call plug#end()
+
 
 " Make backspace behave normally in insert mode.
 set backspace=indent,eol,start

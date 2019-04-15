@@ -74,18 +74,32 @@ fi
 ln -fs -- "$SCRIPT_DIR/nvim" "$NVIM_DIR"
 
 echo "nvim directory symlink created."
+
+echo "Setting up python3 virtualenv."
+python3 -m venv -- "$SCRIPT_DIR/venv"
+PYTHON_BIN="$SCRIPT_DIR/venv/bin/python3"
+
 echo "Vim configuration completed."
 
 # Do not exit automatically on command failure anymore.
 set +e
 
-# Try installing python3 neovim package for deoplete autocompletion support.
-echo "Attempting to install python3 neovim package."
+# Try installing python3 pynvim package for deoplete autocompletion support.
+echo "Installing Python3 pynvim package for nvim."
 
-pip3  install --user --upgrade neovim
+$PYTHON_BIN -m pip install --upgrade pynvim
 
 if [ $? -ne 0 ]; then
-    echo "Python3 neovim package installation failed!"
+    echo "Python3 pynvim package installation failed for nvim!"
+    echo "Might need manual installation for deoplete autocompletion support."
+fi
+
+echo "Installing Python3 pynvim package for vim."
+
+vim -u "$SCRIPT_DIR/install-pynvim.vim" +qall
+
+if [ $? -ne 0 ]; then
+    echo "Python3 pynvim package installation failed for Vim!"
     echo "Might need manual installation for deoplete autocompletion support."
 fi
 
