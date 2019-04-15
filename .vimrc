@@ -7,7 +7,7 @@
 set nocompatible
 
 " Unset all autocommands.
-:autocmd!
+autocmd!
 
 
 " Set python options
