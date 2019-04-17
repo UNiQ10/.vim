@@ -151,6 +151,9 @@ if has('nvim')
     tnoremap jj <C-\><C-n>
 endif
 
+" Use mouse
+set mouse=a
+
 " Add :RemTrailingSp command to remove trailing whitespaces.
 let s:trailingSpRegex='\(\s\+$\)\|\(\($\n\s*\)\+\%$\)'
 command RemTrailingSp :execute '%s/' . s:trailingSpRegex . '//ge'
