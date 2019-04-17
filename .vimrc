@@ -114,17 +114,15 @@ set incsearch
 set ignorecase
 set smartcase
 
+" Use <Space> as leader
+let mapleader=' '
+nnoremap <Space> <Nop>
+
 " Add window switching shortcuts.
-nnoremap <A-h> <C-w>h
-nnoremap <A-j> <C-w>j
-nnoremap <A-k> <C-w>k
-nnoremap <A-l> <C-w>l
-if has('nvim')
-    tnoremap <A-h> <C-\><C-n><C-w>h
-    tnoremap <A-j> <C-\><C-n><C-w>j
-    tnoremap <A-k> <C-\><C-n><C-w>k
-    tnoremap <A-l> <C-\><C-n><C-w>l
-endif
+nnoremap <Leader>h <C-w>h
+nnoremap <Leader>j <C-w>j
+nnoremap <Leader>k <C-w>k
+nnoremap <Leader>l <C-w>l
 
 " Show matching parantheses.
 set showmatch
