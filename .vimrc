@@ -146,6 +146,11 @@ inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 " Map jj in insert mode to <Esc>.
 inoremap jj <Esc>
 
+" Use jj in terminal insert mode to escape insert mode
+if has('nvim')
+    tnoremap jj <C-\><C-n>
+endif
+
 " Add :RemTrailingSp command to remove trailing whitespaces.
 let s:trailingSpRegex='\(\s\+$\)\|\(\($\n\s*\)\+\%$\)'
 command RemTrailingSp :execute '%s/' . s:trailingSpRegex . '//ge'
