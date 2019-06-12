@@ -25,11 +25,11 @@ endif
 " Local variable to store a list of warning messages.
 let s:warnmsglist = []
 
-function AddWarning(msg)
+function! AddWarning(msg)
     call add(s:warnmsglist, a:msg)
 endfunction
 
-function PrintWarningMsgs(msglist)
+function! PrintWarningMsgs(msglist)
     for msg in a:msglist
         echohl WarningMsg
         echo 'Warning: '
@@ -156,7 +156,7 @@ set mouse=a
 
 " Add :RemTrailingSp command to remove trailing whitespaces.
 let s:trailingSpRegex='\(\s\+$\)\|\(\($\n\s*\)\+\%$\)'
-command RemTrailingSp :execute '%s/' . s:trailingSpRegex . '//ge'
+command! RemTrailingSp :execute '%s/' . s:trailingSpRegex . '//ge'
 
 
 " Automatically remove trailing whitespaces if the file, when opened, didn't
