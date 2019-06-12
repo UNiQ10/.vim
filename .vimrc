@@ -66,9 +66,23 @@ else
         \ 'Not using neovim/Vim8 with python3 support. deoplete will not work.')
 endif
 
+"call plug#end()
+
+"call plug#begin(expand('~/.vim/plugged'))
+
+Plug 'neovimhaskell/haskell-vim'
+
+Plug 'vim-airline/vim-airline'
+
+Plug 'w0rp/ale'
+
 
 call plug#end()
 
+
+let g:ale_linters = {'go': ['gofmt', 'golint', 'govet', 'golangserver']}
+let g:ale_go_langserver_executable = expand('$GOPATH/bin/go-langserver')
+let g:ale_go_lint_executable = expand('$GOPATH/bin/golint')
 
 " Make backspace behave normally in insert mode.
 set backspace=indent,eol,start
@@ -143,6 +157,8 @@ let g:deoplete#enable_at_startup=1
 " Use TAB to cycle through suggestions.
 inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
 
+call deoplete#custom#source('ale', 'rank', 999)
+
 " Map jj in insert mode to <Esc>.
 inoremap jj <Esc>
 
@@ -156,18 +172,22 @@ set mouse=a
 
 " Add :RemTrailingSp command to remove trailing whitespaces.
 let s:trailingSpRegex='\(\s\+$\)\|\(\($\n\s*\)\+\%$\)'
-command! RemTrailingSp :execute '%s/' . s:trailingSpRegex . '//ge'
+command! RemTrailingSp execute '%s/' . s:trailingSpRegex . '//ge'
 
 
 " Automatically remove trailing whitespaces if the file, when opened, didn't
 " have any trailing whitespace.
 
 " Set a flag if a new file has trailing whitespaces when opened.
-autocmd BufReadPost * :if(search(s:trailingSpRegex, 'nw'))
-                      \ | let b:inithastrailingsp = 1
+autocmd BufReadPost * if(search(s:trailingSpRegex, 'nw'))
+            \ | let b:trail_sp_on_init = 1 | endif
 " Remove trailing whitespaces if the whitespace flag is not set.
-autocmd BufWritePre * :if((!exists('b:inithastrailingsp'))
-                      \   || (!b:inithastrailingsp)) | RemTrailingSp
+autocmd BufWritePre * if (!exists('b:trail_sp_on_init')
+                    \     || !b:trail_sp_on_init) |
+                    \    execute 'RemTrailingSp' |
+                    \ endif
+
+autocmd Filetype go setlocal noexpandtab tabstop=4 shiftwidth=4 softtabstop=4
 
 " Disable line numbers in terminal mode.
 if has('nvim')
@@ -175,3 +195,10 @@ if has('nvim')
 endif
 
 autocmd VimEnter * call PrintWarningMsgs(s:warnmsglist)
+
+autocmd VimEnter * if empty($EDITOR_CALL) |
+                        \ vsplit | execute "normal! \<C-w>l" | enew | split |
+                        \ execute "normal! \<C-w>j" | execute "terminal" |
+                        \ setlocal nonumber norelativenumber |
+                        \ execute "normal! \<C-w>h" |
+                 \ endif
